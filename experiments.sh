@@ -1,0 +1,1 @@
+python experiments.py --cuda --model trs --pretrain_emb --noam --label_smoothing --emb_dim 768 --hidden_dim 768 --latent_dim 600 --batch_size 8 --max_enc_steps 200
