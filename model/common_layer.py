@@ -12,6 +12,7 @@ import subprocess
 from utils import config
 from utils.metric import rouge, moses_multi_bleu, _prec_recall_f1_score, entailtment_score
 from utils.beam_omt import Translator
+from utils.beam_omt_transformer import Translator as TrsTranslator
 import pprint
 from tqdm import tqdm
 pp = pprint.PrettyPrinter(indent=1)
@@ -707,6 +708,10 @@ def evaluate_graphex(model, data, data_loader_all=None, model_name='trs', ty='va
     loss,ppl,bleu_score_b = evaluate(model, data, data_loader_all, model_name, ty, writer, n_iter, ty_eval, verbose, log, result_file, ref_file, case_file, t)
     return loss,ppl,bleu_score_b
 
+def evaluate_transformer(model, data, data_loader_all=None, model_name='trs', ty='valid', writer=None, n_iter=0, ty_eval="before", verbose=False, log=False, result_file="results/results_transformer.txt", ref_file="results/ref_transformer.txt", case_file="results/case_transformer.txt"):
+    t = TrsTranslator(model, model.vocab)
+    loss,ppl,bleu_score_b = evaluate(model, data, data_loader_all, model_name, ty, writer, n_iter, ty_eval, verbose, log, result_file, ref_file, case_file, t)
+    return loss,ppl,bleu_score_b
 
 def evaluate(model, data, data_loader_all=None, model_name='trs', ty='valid', writer=None, n_iter=0, ty_eval="before", verbose=False, log=False, result_file="results/results_transformer.txt", ref_file="results/ref_transformer.txt", case_file="results/case_transformer.txt", t=None):
     if log:

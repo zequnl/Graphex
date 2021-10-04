@@ -60,12 +60,17 @@ class Dataset(data.Dataset):
             self.src.append([d[0]])
             self.trg.append(d[1])
             self.trg2.append(d[1])
-            idx = node_dic[d[0]+"\n"]
+            idx = node_dic[d[0]]
             self.node_index.append(idx)
             self.node_emb.append(node_emb[idx])
-            #self.node_emb.append(0)
-            self.node_emb2.append(node_emb2[idx])
-            #self.node_emb2.append(0)
+            if not os.path.exists(config.data_dir + "/node_embeddings_phrases.p"):
+                self.node_emb.append(0)
+            else:
+                self.node_emb.append(node_emb[idx])
+            if not os.path.exists(config.data_dir + "/node_embeddings_phrases_def.p"):
+                self.node_emb2.append(0)
+            else:
+                self.node_emb2.append(node_emb2[idx])
         self.vocab = vocab
         self.num_total_seqs = len(data)
 
@@ -220,17 +225,17 @@ def prepare_data_seq():
     adj_lists = defaultdict(set)
     node_dic = {}
     for l in train_name:
-        node_dic[l] = len(node_dic) 
+        node_dic[l.replace("\n","")] = len(node_dic) 
     for l in valid_name:
-        node_dic[l] = len(node_dic) 
+        node_dic[l.replace("\n","")] = len(node_dic) 
     for l in test_name:
-        node_dic[l] = len(node_dic)
+        node_dic[l.replace("\n","")] = len(node_dic)
     for k in graph:
         node1 = node_dic[k]
-        n = graph[k]
-        node2 = node_dic[n]
-        adj_lists[node1].add(node2)
-        adj_lists[node2].add(node1)
+        for n in graph[k]:
+            node2 = node_dic[n]
+            adj_lists[node1].add(node2)
+            adj_lists[node2].add(node1)
    
     if not os.path.exists(config.save_path):
         os.makedirs(config.save_path)
@@ -239,6 +244,8 @@ def prepare_data_seq():
         print("Saved PICKLE")
     with open(config.save_path+'/node_dic.json','w') as f:
         json.dump(node_dic,f)
+    if not os.path.exists(config.data_dir + "/node_embeddings_phrases.p"):
+        return train, valid, test, vocab, adj_lists, node_dic, node_dic, node_dic
     with open(config.data_dir + "/node_embeddings_phrases.p", "rb") as f:
         node_emb = pickle.load(f)
     with open(config.data_dir + "/node_embeddings_phrases_def.p", "rb") as f:

@@ -33,8 +33,6 @@ for di in file_list:
     config.valid_len = train_len + valid_len
     config.total_len = train_len + valid_len + test_len
     data_loader_all, data_loader_tr, data_loader_val, data_loader_test = p.get_all_data(batch_size=config.batch_size)
-    for i,d in enumerate(data_loader_all):
-        all_data = d
     model = Graphex(p.vocab)
     print("MODEL USED",config.model)
     print("TRAINABLE PARAMETERS",count_parameters(model))
@@ -48,16 +46,14 @@ for di in file_list:
         pbar = tqdm(enumerate(data_loader_tr),total=len(data_loader_tr))
         for i, d in pbar:
             torch.cuda.empty_cache()
-            loss, ppl, total_loss = model.train_one_batch(d, all_data)
+            loss, ppl, total_loss = model.train_one_batch(d)
             l.append(loss)
             p.append(ppl)
             #c.append(cont_loss)
-            pbar.set_description("loss:{:.4f} ppl:{:.1f} cont:{:.4f}".format(np.mean(l),np.mean(p),0))
-        #pbar.set_description("loss:{:.4f} ppl:{:.1f}".format(loss,ppl))
+            pbar.set_description("loss:{:.4f} ppl:{:.1f}".format(np.mean(l),np.mean(p)))
             torch.cuda.empty_cache()
-        #break
         
-        loss,ppl_val,bleu_score_b = evaluate(model,data_loader_val,all_data,model_name=config.model,ty="valid", verbose=False)
+        loss,ppl_val,bleu_score_b = evaluate(model,data_loader_val,model_name=config.model,ty="valid", verbose=False)
         if(ppl_val <= best_ppl):
             best_ppl = ppl_val
             cnt = 0
@@ -73,7 +69,7 @@ for di in file_list:
         os.makedirs("results/")
     if not os.path.exists("results/" + di + "/"):
         os.makedirs("results/" + di + "/")
-    loss,ppl,bleu_score_b = evaluate(model,data_loader_test,all_data,model_name=config.model,ty='test',verbose=False,log=True, result_file="results/" + di + "/results_graph.txt", ref_file="results/" + di + "/ref_graph.txt", case_file="results/" + di + "/case_graph.txt")
+    loss,ppl,bleu_score_b = evaluate(model,data_loader_test,model_name=config.model,ty='test',verbose=False,log=True, result_file="results/" + di + "/results_graph.txt", ref_file="results/" + di + "/ref_graph.txt", case_file="results/" + di + "/case_graph.txt")
     ppls[di] = ppl
     bleus[di] = bleu_score_b
     
