@@ -4,22 +4,6 @@ import numpy as np
 from biobert_embedding.embedding import BiobertEmbedding
 import pickle
 
-# pretrained biobert embeddings
-f = open("data/vocab.txt", "r")
-f2 = open("vectors/embeddings.txt", "w")
-lines = f.readlines()
-biobert = BiobertEmbedding()
-for i,l in enumerate(lines):
-    if i % 100 == 0:
-        print(i)
-    word_embeddings = biobert.word_vector(l[:-1])
-    f2.write(l[:-1])    
-    for e in word_embeddings[0]:
-        f2.write(" ")
-        f2.write(str(e)[7:-1])
-    f2.write("\n")
-f2.close()
-
 # prepare data for global semantic embeddings
 file_list = os.listdir("data/")
 for fi in file_list:
@@ -84,9 +68,9 @@ for fi in file_list:
         dicr[len(dicr)] = key
         dic[key] = len(dic)
         l.append(key)
-    with open("data/" + fi + "/phrase_dic.p", "wb") as f:
+    with open("data/" + fi + "/phrase_dic_def.p", "wb") as f:
         pickle.dump(dic, f)
-    with open("data/" + fi + "/reversed_dic.p", "wb") as f:
+    with open("data/" + fi + "/reversed_dic_def.p", "wb") as f:
         pickle.dump(dicr, f)
-    with open("data/" + fi + "/phrase_vocab.p", "wb") as f:
+    with open("data/" + fi + "/phrase_vocab_def.p", "wb") as f:
         pickle.dump(l, f)
