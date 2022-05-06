@@ -173,9 +173,9 @@ class Decoder(nn.Module):
 
     def forward(self, inputs, encoder_output, mask):
         mask_src, mask_trg = mask
-        print("decode", self.mask.size())
-        print("decode", mask_trg.size())
-        print("decode", mask_trg.type(torch.uint8).size())
+        #print("decode", self.mask.size())
+        #print("decode", mask_trg.size())
+        #print("decode", mask_trg.type(torch.uint8).size())
         dec_mask = torch.gt(mask_trg.type(torch.uint8) + self.mask[:, :mask_trg.size(-1), :mask_trg.size(-1)].type(torch.uint8), 0)
         #Add input dropout
         x = self.input_dropout(inputs)
