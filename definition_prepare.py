@@ -72,6 +72,8 @@ for di in file_list:
     config.total_len = train_len + valid_len + test_len
     data_loader_all, data_loader_tr, data_loader_val, data_loader_test = p.get_all_data(batch_size=config.batch_size)
     pbar = tqdm(enumerate(data_loader_test),total=len(data_loader_test))
+    if not os.path.exists("results/" + di):
+        os.mkdir("results/" + di)
     loss,ppl,bleu_score_b = evaluate(model,data_loader_test,model_name=config.model,ty='test',verbose=False,log=True, result_file="data/" + di + "/test_def_gen.txt", ref_file="results/" + di + "/ref_transformer_full.txt", case_file="results/" + di + "/case_transformer_full.txt")
     
             
