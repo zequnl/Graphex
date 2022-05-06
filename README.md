@@ -16,7 +16,7 @@ Please cite our paper when you use this code in your work.
 
 2. Generate the BioBERT embeddings and the data for global semantic embedding:
  ```console
-❱❱❱ python embedding_prepare.py
+❱❱❱ python embeddings_prepare.py
 ```
 The BioBERT embeddings ```vectors/embeddings.txt``` will be generated.
 
