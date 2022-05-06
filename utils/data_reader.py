@@ -62,7 +62,6 @@ class Dataset(data.Dataset):
             self.trg2.append(d[1])
             idx = node_dic[d[0]]
             self.node_index.append(idx)
-            self.node_emb.append(node_emb[idx])
             if not os.path.exists(config.data_dir + "/node_embeddings_phrases.p"):
                 self.node_emb.append(0)
             else:
