@@ -75,6 +75,18 @@ for di in file_list:
     if not os.path.exists("results/" + di):
         os.mkdir("results/" + di)
     loss,ppl,bleu_score_b = evaluate(model,data_loader_test,model_name=config.model,ty='test',verbose=False,log=True, result_file="data/" + di + "/test_def_gen.txt", ref_file="results/" + di + "/ref_transformer_full.txt", case_file="results/" + di + "/case_transformer_full.txt")
+    with open("results/" + di + "ref_transformer_full.txt", "r") as f:
+        lines = f.read().splitlines()
+    with open("data/" + di + "/test_def_gen.txt", "r") as f:
+        lines2 = f.read().splitlines()
+    def_gen = {}
+    for l, l2 in zip(lines, lines2):
+        def_gen[l] = l2
+    with open("data/" + di + "/test_def.txt", "r") as f:
+        lines = f.read().splitlines()
+    with open("data/" + di + "/test_def_gen.txt", "w") as f:
+        for l in lines:
+            f.write(def_gen[l] + "\n")
     
             
  
